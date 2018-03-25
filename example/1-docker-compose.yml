@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mongo:
+    image: drannoc/mongosail
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_FILEPATH=/data/logs/logs
+      - MONGO_DAEMON=1
+      - MONGO_IMPORT=--type json --file /data/import.json
+    volumes:
+      - ./data/logs:/data/logs
+    ports:
+      - 27017:27017
+
+# This configuration will run mongo as a daemon allowing to use mongoimport right after mongo starts
+# while writing logs to /data/logs/logs (./data/logs/logs on physical volume)

@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mongo:
+    image: drannoc/mongosail
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/data/logs
+    volumes:
+      - ./data/logs:/data/logs
+    ports:
+      - 27017:27017
+
+# This configuration will simply run mongo and write logs to /data/logs/[timestamp] (./data/logs/[timestamp] on physical volume)
