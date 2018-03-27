@@ -13,4 +13,4 @@ List of customizable ENV Vars:
 
 Check docker-compose.yml in [example](/example).
 
-[drannoc/mongosail](https://hub.docker.com/r/drannoc/mongosail/)
+__Docker repo name: [drannoc/mongosail](https://hub.docker.com/r/drannoc/mongosail/)__
