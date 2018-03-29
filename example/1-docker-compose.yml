@@ -8,6 +8,7 @@ services:
       - MONGO_DAEMON=1
       - MONGO_IMPORT=--type json --file /data/import.json
     volumes:
+      - ./data/import.json:/data/import.json
       - ./data/logs:/data/logs
     ports:
       - 27017:27017
