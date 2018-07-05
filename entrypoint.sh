@@ -56,7 +56,7 @@ fi
 
 echo "[INFO] Will now launch 'mongod' using these arguments: \"$ARGS\"."
 
-mongod $ARGS
+mongod --bind_ip 0.0.0.0 $ARGS
 
 if [ ! -z "$MONGO_IMPORT" ]; then
     echo "[INFO] Will now launch 'mongoimport' using the file \"$MONGO_IMPORT\"." 
