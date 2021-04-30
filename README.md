@@ -9,6 +9,7 @@ List of customizable ENV Vars:
 - __MONGO_LOG_APPEND__: (1|0) default is 1
 - __MONGO_SMALL_FILES__: (1|0) default is 1
 - __MONGO_DAEMON__: (1|0) default is 0
+- __MONGO_AUTH__: (1|0) default is 0
 - __MONGO_IMPORT__: (string) list of params to pass to mongoimport, ex "--type json --file /data/import.json", __MONGO_DAEMON=1__ is most likely required
 
 Check docker-compose.yml in [example](/example).
