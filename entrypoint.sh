@@ -54,6 +54,11 @@ if [ $MONGO_DAEMON == 1 ]; then
     ARGS="$ARGS --fork --pidfilepath=$PID_FILEPATH"
 fi
 
+if [ $MONGO_AUTH == 1 ]; then
+    ARGS="$ARGS --auth"
+fi
+
+
 echo "[INFO] Will now launch 'mongod' using these arguments: \"$ARGS\"."
 
 mongod --bind_ip 0.0.0.0 $ARGS
