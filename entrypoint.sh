@@ -46,11 +46,11 @@ if [ -z $MONGO_LOG_APPEND ] || [ [ ! -z $MONGO_LOG_APPEND ] && [ $MONGO_LOG_APPE
     ARGS="$ARGS --logappend"
 fi
 
-if [ -z $MONGO_LOG_APPEND ] && [ $MONGO_AUTH == 1 ]; then
+if [ ! -z $MONGO_AUTH ] && [ $MONGO_AUTH == 1 ]; then
     ARGS="$ARGS --auth"
 fi
 
-if [ -z $MONGO_LOG_APPEND ] && [ $MONGO_DAEMON == 1 ]; then
+if [ ! -z $MONGO_DAEMON ] && [ $MONGO_DAEMON == 1 ]; then
     ARGS="$ARGS --fork --pidfilepath=$PID_FILEPATH"
 fi
 
