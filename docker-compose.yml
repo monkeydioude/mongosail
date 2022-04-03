@@ -1,0 +1,23 @@
+version: "3"
+services:
+  mongo:
+    image: mongosail
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_FILEPATH=/data/logs/logs
+      - MONGO_DAEMON=1
+      # - MONGO_ADMIN_USER=admin
+      - MONGO_ADMIN_PWD=admin
+      - MONGO_USERS_CREATE=test1:test1:db1=readWrite/db2=readWrite,test2:test2:db1=read/db2=readWrite
+      - MONGO_AUTH=1
+      # --file must be a path inside of the virtual volume
+      # - MONGO_IMPORT=--type json --file /data/import.json
+    volumes:
+      # Used for MONGO_IMPORT
+      # - ./db/import:/data/import.json
+      - /tmp/logs:/data/logs
+      - /tmp/data:/data/db
+    ports:
+      - 27017:27017
+# This configuration will run mongo as a daemon allowing to use mongoimport right after mongo starts
+# while writing logs to /data/logs/logs (./data/logs/logs on physical volume)

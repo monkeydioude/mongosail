@@ -13,6 +13,7 @@ LOGPATH=
 PID_FILEPATH=/tmp/pid
 PID=
 PID_SLEEP_CHECK=5
+FORK="--fork --pidfilepath=$PID_FILEPATH"
 
 # if MONGO_LOG_FILEPATH exists, MONGO_LOG_DIR and MONGO_LOG_FILENAME will be ignored
 if [ -z $MONGO_LOG_FILEPATH ]; then
@@ -46,12 +47,51 @@ if [ -z $MONGO_LOG_APPEND ] || [ [ ! -z $MONGO_LOG_APPEND ] && [ $MONGO_LOG_APPE
     ARGS="$ARGS --logappend"
 fi
 
-if [ ! -z $MONGO_AUTH ] && [ $MONGO_AUTH == 1 ]; then
+if [ -z $MONGO_LOG_APPEND ] && [ ! -z $MONGO_AUTH ] && [ $MONGO_AUTH == 1 ]; then
     ARGS="$ARGS --auth"
 fi
 
-if [ ! -z $MONGO_DAEMON ] && [ $MONGO_DAEMON == 1 ]; then
-    ARGS="$ARGS --fork --pidfilepath=$PID_FILEPATH"
+if [ -z $MONGO_LOG_APPEND ] && [ ! -z $MONGO_DAEMON ] && [ $MONGO_DAEMON == 1 ]; then
+    ARGS="$ARGS $FORK"
+fi
+
+if [ ! -z $MONGO_ADMIN_USER ] && [ -z $MONGO_ADMIN_PWD ] && [ ! -z $MONGO_AUTH ]; then
+    echo "[ERR ] Must provide MONGO_ADMIN_PWD env var when MONGO_ADMIN_USER and MONGO_AUTH are set."
+    exit 1
+fi
+
+ADMIN=0
+if [ ! -z $MONGO_ADMIN_USER ] && [ ! -z $MONGO_ADMIN_PWD ]; then
+    ADMIN=1
+fi
+
+if [ $ADMIN == 1 ] || [ ! -z $MONGO_USERS_CREATE ]; then
+    echo "[INFO] Starting mongo once in root mode (no auth) to create users."
+    mongod --bind_ip 0.0.0.0 $FORK --syslog
+
+    if [ -f $PID_FILEPATH ]; then
+        PID=`cat $PID_FILEPATH`
+    fi
+    while [ -z "`ps -p $PID | grep mongod`" ]; do
+        sleep $PID_SLEEP_CHECK
+    done
+
+    # if [ $ADMIN == 1 ]; then
+    #     echo "[INFO] Creating mongo admin user."
+    #     /create_user.sh $MONGO_ADMIN_USER:$MONGO_ADMIN_PWD:admin=userAdminAnyDatabase/admin=readWriteAnyDatabase
+    # fi
+    if [ ! -z $MONGO_USERS_CREATE ]; then
+        echo "[INFO] Creating mongo users."
+        IFS="," read -a usersStringArr <<< $MONGO_USERS_CREATE
+        for userString in "${usersStringArr[@]}"
+        do
+            /create_user.sh $userString
+        done
+    fi
+
+
+    echo "[INFO] Users created. Now restarting with provided arguments."
+    kill -9 $PID
 fi
 
 echo "[INFO] Will now launch 'mongod' using these arguments: \"$ARGS\"."
