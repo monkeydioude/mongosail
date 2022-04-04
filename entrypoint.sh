@@ -7,6 +7,10 @@
 # MONGO_SMALL_FILES: (1|0) default is 1
 # MONGO_DAEMON: (1|0) default is 0
 # MONGO_IMPORT: (string) list of params to pass to mongoimport, ex "--type json --file /data/import.json"
+# MONGO_ADMIN_USER: (string) admin user name. Used for admin creation and other future operations that will require admin login
+# MONGO_ADMIN_PWD: (string) admin user password. Used for admin creation and other future operations that will require admin login
+# MONGO_USERS_CREATE: (string) list of users to create at startup. Format is {user1Name}:{user1Pwd}:{db1}={role}/{db2}={role},{user2Name}...
+#   Example: test1:test1:db1=readWrite/db2=readWrite,test2:test2:db1=read/db2=readWrite
 
 ARGS=
 LOGPATH=
@@ -76,19 +80,19 @@ if [ $ADMIN == 1 ] || [ ! -z $MONGO_USERS_CREATE ]; then
         sleep $PID_SLEEP_CHECK
     done
 
-    # if [ $ADMIN == 1 ]; then
-    #     echo "[INFO] Creating mongo admin user."
-    #     /create_user.sh $MONGO_ADMIN_USER:$MONGO_ADMIN_PWD:admin=userAdminAnyDatabase/admin=readWriteAnyDatabase
-    # fi
+    if [ $ADMIN == 1 ]; then
+        echo "[INFO] Creating mongo admin user."
+        /create_user.sh $MONGO_ADMIN_USER:$MONGO_ADMIN_PWD:admin=userAdminAnyDatabase/admin=readWriteAnyDatabase
+    fi
     if [ ! -z $MONGO_USERS_CREATE ]; then
         echo "[INFO] Creating mongo users."
         IFS="," read -a usersStringArr <<< $MONGO_USERS_CREATE
         for userString in "${usersStringArr[@]}"
         do
+            sleep 1
             /create_user.sh $userString
         done
     fi
-
 
     echo "[INFO] Users created. Now restarting with provided arguments."
     kill -9 $PID
