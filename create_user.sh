@@ -2,9 +2,10 @@
 
 if [ $1 == "help" ]; then
   echo "Usage: create_user {usersString} ((adminLogin)) ((adminPwd))"
-  echo "'adminLogin' and 'adminPwd' are optional. They are required when user creation requires authentification."
-  echo "usersString should be built as such: {userName}:{userPwd}:{db1}={role}/{db2}={role}"
-  echo "Example: johnny:bgoode:guitar=readWrite/neworleans=readWrite"
+  echo "  'adminLogin' and 'adminPwd' are optional. Required when user creation requires authentification."
+  echo "  'usersString' should be built as such: {userName}:{userPwd}:{db1}={role}/{db2}={role}"
+  echo "  Example: johnny:bgoode:guitar=readWrite/neworleans=readWrite"
+  exit 0
 fi
 
 loginParams=
