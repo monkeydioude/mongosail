@@ -82,7 +82,7 @@ if [ $ADMIN == 1 ] || [ ! -z $MONGO_USERS_CREATE ]; then
 
     if [ $ADMIN == 1 ]; then
         echo "[INFO] Creating mongo admin user."
-        /create_user.sh $MONGO_ADMIN_USER:$MONGO_ADMIN_PWD:admin=userAdminAnyDatabase/admin=readWriteAnyDatabase
+        /create_user.sh $MONGO_ADMIN_USER:$MONGO_ADMIN_PWD:admin=userAdminAnyDatabase/admin=readWriteAnyDatabase $MONGO_ADMIN_USER $MONGO_ADMIN_PWD
     fi
     if [ ! -z $MONGO_USERS_CREATE ]; then
         echo "[INFO] Creating mongo users."
@@ -90,7 +90,7 @@ if [ $ADMIN == 1 ] || [ ! -z $MONGO_USERS_CREATE ]; then
         for userString in "${usersStringArr[@]}"
         do
             sleep 1
-            /create_user.sh $userString
+            /create_user.sh $userString $MONGO_ADMIN_USER $MONGO_ADMIN_PWD
         done
     fi
 
